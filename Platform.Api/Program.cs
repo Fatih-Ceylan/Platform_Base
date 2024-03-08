@@ -92,7 +92,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 var app = builder.Build();
 //app.UseMiddleware<RefererCheckMiddleware>("http://10.0.2.89:5183");
 
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -5,7 +5,6 @@ using T = Platform.Domain.Entities.Identity;
 using Platform.Application.Absractions.Token;
 using Platform.Application.DTOs.Identity;
 using Platform.Application.Exceptions;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Platform.Domain.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 namespace Platform.Persistence.Services
@@ -42,7 +41,7 @@ namespace Platform.Persistence.Services
             if (result.Succeeded) // Authentication başarılı!
             {
                 TokenDTO token = _tokenHandler.CreateAccessToken(30);
-                await _appUserService.UpdateRefreshTokenAsync(token.RefreshToken, appUser, token.ExpiryDate, 60);
+                await _appUserService.UpdateRefreshTokenAsync(token.RefreshToken, appUser, token.ExpiryDate, 3600);
 
                 return new()
                 {
@@ -60,8 +59,8 @@ namespace Platform.Persistence.Services
             AppUser? appUser = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
             if (appUser != null && appUser?.RefreshTokenEndDate > DateTime.UtcNow)
             {
-                TokenDTO tokenDTO = _tokenHandler.CreateAccessToken(30);
-                await _appUserService.UpdateRefreshTokenAsync(refreshToken, appUser, tokenDTO.ExpiryDate, 60);
+                TokenDTO tokenDTO = _tokenHandler.CreateAccessToken(3600);
+                await _appUserService.UpdateRefreshTokenAsync(refreshToken, appUser, tokenDTO.ExpiryDate, 3600);
                 return new()
                 {
                     Token = tokenDTO
